@@ -1,0 +1,11 @@
+http://mysite.verizon.net/astronaut/vim/index.html
+Vimball Archiver
+Updated Oct 30, 2008 (v30b)
+Archive and de-archive vim plugins. To install: well, I've decided that the vimball plugin itself should not expect that vimball is available to extract itself. Hence, it is now being distributed as vimball.tar.gz. To unravel and install it:
+
+    * Change directory to the directory holding the plugin/ and autoload/ directories where you want to install vimball. It is probably best to install the new vimball in the distribution directory. If you choose not to overwrite the version that came with the plugin, but to put the new vimball in your personal directories, you must remove or otherwise deactivate the original version that came with vim 7.0.
+    * gunzip vimball.tar.gz
+    * tar -oxvf vimball.tar
+    * (unix) chmod a+r autoload/vimball.vim doc/pi_vimball.txt plugin/vimballPlugin.vim
+
+I am now also providing a program (you'll need a C compiler) that will create vimballs: mkvimball. 

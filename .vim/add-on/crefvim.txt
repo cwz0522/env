@@ -1,0 +1,69 @@
+CRefVim : a C-reference manual especially designed for Vim
+
+ script karma  	Rating 1019/459, Downloaded by 11602
+
+created by
+Christian Habermann
+ 
+script type
+utility
+ 
+description
+The intention of this project is to provide a C-reference manual that can
+be viewed with Vim and accessed from within Vim.
+The C-reference is a reference, it is NOT a tutorial or a guide on how
+to write C-programs. It is a quick reference to the functions and syntax
+of the standard C language.
+
+There are several ways to specify a word CRefVim should search for in order
+to view help:
+
+  <Leader>cr normal mode:  get help for word under cursor
+                           Memory aid cr: (c)-(r)eference
+  <Leader>cr visual mode:  get help for visually selected text
+                           Memory aid cr: (c)-(r)eference
+  <Leader>cw:              prompt for word CRefVim should search for
+                           Memory aid cw: (c)-reference (w)hat
+  <Leader>cc:              jump to table of contents of the C-reference manual
+                           Memory aid cc: (c)-reference (c)ontents
+
+Note: by default <Leader> is \, e.g. press \cr to invoke C-reference
+
+Note: The best way to search for an operator (++, --, %, ...) is to visually
+select it and press <Leader>cr.
+
+To get help do :help crefvimdoc
+To show the C-reference manual do :help crefvim
+ 
+install details
+CRefVim consists of four files, the script 'crefvim.vim', its
+documentation 'crefvimdoc.txt', the C-reference 'crefvim.txt' and a syntax
+file to extend the standard syntax highlighting for help files called
+'help.vim'.
+
+Copy the script "crefvim.vim" to your local plugin-directory
+  Unix:    ~/.vim/plugin
+  Windows: c:\vimfiles\plugin
+
+You have to add the documentation and the C-reference to Vim's help
+system. To do this, copy both 'crefvimdoc.txt' and 'crefvim.txt' to
+your local doc-directory:
+  Unix:    ~/.vim/doc
+  Windows: c:\vimfiles\doc
+
+Then start Vim and do:
+  :helptags ~/.vim/doc   (or :helptags c:\vimfiles\doc for Windows)
+
+
+Finally the standard help syntax highlighting must be extended, so that
+the C-reference is viewed correctly. To do so, copy the file 'help.vim' to
+your local after/syntax directory:
+  Unix:    ~/.vim/after/syntax
+  Windows: c:\vimfiles\after\syntax
+
+This extention of the help syntax file is only active for the C-reference
+manual.
+
+
+That's all to do.
+ 

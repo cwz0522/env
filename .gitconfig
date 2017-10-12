@@ -1,0 +1,16 @@
+[user]
+	name = Peter Chen
+	email = 29876364+cwz0522@users.noreply.github.com
+[core]
+	editor = /usr/bin/vim
+[color]
+	ui = auto
+[alias]
+# Displays commit graph is a nice colored view for all branches including stashes
+# Use "-N" for displaying the last N commits
+	las = log --graph --all --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+
+# Displays commit graph is a nice colored view for all branches
+	la = log --branches --remotes --tags --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+
+

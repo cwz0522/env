@@ -1,0 +1,53 @@
+taglist.vim : Source code browser (supports C/C++, java, perl, python, tcl, sql, php, etc)
+
+ script karma  	Rating 5486/1718, Downloaded by 78667
+
+created by
+Yegappan Lakshmanan
+ 
+script type
+utility
+ 
+description
+The "Tag List" plugin is a source code browser plugin for Vim and
+provides an overview of the structure of source code files and allows
+you to efficiently browse through source code files for different
+programming languages.  You can visit the taglist plugin home page for
+more information:
+
+      http://vim-taglist.sourceforge.net
+
+You can subscribe to the taglist mailing list to post your questions
+or suggestions for improvement or to report bugs. Visit the following
+page for subscribing to the mailing list:
+
+      http://groups.yahoo.com/group/taglist/
+
+For more information about using this plugin, after installing the
+taglist plugin, use the ":help taglist" command.
+ 
+install details
+1. Download the taglist.zip file and unzip the files to the $HOME/.vim or the
+    $HOME/vimfiles or the $VIM/vimfiles directory. After this step, you should
+    have the following two files (the directory structure should be preserved):
+
+         plugin/taglist.vim - main taglist plugin file
+         doc/taglist.txt    - documentation (help) file
+
+   Refer to the |add-plugin|, |add-global-plugin| and |runtimepath| Vim
+   help pages for more details about installing Vim plugins.
+2. Change to the $HOME/.vim/doc or $HOME/vimfiles/doc or $VIM/vimfiles/doc
+    directory, start Vim and run the ":helptags ." command to process the
+    taglist help file. Without this step, you cannot jump to the taglist help
+    topics.
+3. If the exuberant ctags utility is not present in your PATH, then set the
+    Tlist_Ctags_Cmd variable to point to the location of the exuberant ctags
+    utility (not to the directory) in the .vimrc file.
+4. If you are running a terminal/console version of Vim and the terminal
+    doesn't support changing the window width then set the
+    'Tlist_Inc_Winwidth' variable to 0 in the .vimrc file.
+5. Restart Vim.
+6. You can now use the ":TlistToggle" command to open/close the taglist
+    window. You can use the ":help taglist" command to get more information
+    about using the taglist plugin.
+ 
