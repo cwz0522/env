@@ -115,13 +115,17 @@ nmap <F4> :let str = input("string to grep: ")<bar>exe ":cs find 6 " . str<CR>
 vmap <unique> <silent> g/     y/<C-R>=substitute(escape(@", '\\/.*$^~[]'),"\n","\\\\n","g")<CR><CR>
 vmap <unique> <silent> g?     y/<C-R>=substitute(escape(@", '\\/.*$^~[]'),"\n","\\\\n","g")<CR><CR>
 
+" * for PRIMARY
+" + for CLIPBOARD
 " copy/paste between vim buffer & system clipboard
-vmap <unique> <silent> <F2> "+y
+"vmap <unique> <silent> <F2> "+y
+vmap <unique> <silent> <F2> :w ! xsel -i -b
 " copy contents of the unnamed register to system clipboard
 nmap <unique> <silent> <F2> :let @+=@<CR>
-nmap <unique> <silent> <F3> "+p
+"nmap <unique> <silent> <F3> "+p
+nmap <unique> <silent> <F3> :r!xsel -b -o
 nmap <unique> <silent> <F7> :setlocal spell! spelllang=en_us<CR>
-nmap <unique> <silent> <F11> :!ydict <C-R>=expand("<cword>")<CR><CR>
+nmap <unique> <silent> ,d :!LANG=en_US.UTF8 zdict <C-R>=expand("<cword>")<CR><CR>
 
 "nmap <unique> <F8> :set hls!<bar>set hls?<cr>
 nmap <unique> <F8> :let @/ = ""<CR>
