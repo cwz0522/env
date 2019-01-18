@@ -46,7 +46,7 @@ colorscheme torte
 "colorscheme desert
 set visualbell
 set laststatus=2
-set statusline=%<%f%=\ [%1*%M%*%n%R%H]\ %-19(%3l,%02c%03V%)%O'%02b'
+set statusline=%<%f%=\ [%1*%M%*%n%R%H]\ %-19(%3l,%02c%03V%)\ %02BH
 hi User1 term=inverse,bold cterm=inverse,bold ctermfg=red
 set cmdheight=2
 set scs
@@ -54,6 +54,7 @@ set scs
 set noic
 set foldmethod=marker
 "set guifont=MiscFixed\ 12
+"set guifont=DejaVu\ Sans\ Mono\ 12
 "set guifont=文鼎ＰＬ新宋Mono\ 12
 set guifont=文泉驛等寬微米黑\ 10
 "for mswin
@@ -67,6 +68,20 @@ nmap <silent> <unique> <F5> <C-O>
 set path+=./include/*
 
 let spell_auto_type=""
+    "vim支持打开的文件编码
+"    set fileencodings=utf-8,ucs-bom,shift-jis,latin1,big5,gb18030,gbk,gb2312,cp936  "文件 UTF-8 编码
+    set fileencodings=ucs-bom,utf-8,big5,latin1  "文件 UTF-8 编码
+    " 解决显示界面乱码
+    set fileencoding=utf-8
+    set encoding=utf-8      "vim 内部编码
+    set termencoding=utf-8
+    set formatoptions+=m
+
+
+
+
+"    set guifont=Courier\ New\:h12
+"    set guifontwide=NSimsun\:h12
 
 " *** cscope settings *** {{{
 if has("cscope")
@@ -102,7 +117,7 @@ nmap <unique> \cs6 :cs find 6 <C-R>=expand("<cword>")<CR><CR>
 nmap <unique> \cs7 :cs find 7 <C-R>=expand("<cfile>")<CR><CR>
 "nmap <unique> \cs8 :cs find 8 <C-R>=expand("<cfile>")<CR><CR>
 nmap <unique> \cs8 :cs find 8 %:t<CR>
-nmap <F4> :let str = input("string to grep: ")<bar>exe ":cs find 6 " . str<CR> 
+nmap <F4> :let str = input("string to grep: ")<bar>exe ":cs find 6 " . str<CR>
 "nmap <F4> [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
 
 " *** useful key-mappings *** {{{
@@ -118,21 +133,22 @@ vmap <unique> <silent> g?     y/<C-R>=substitute(escape(@", '\\/.*$^~[]'),"\n","
 " * for PRIMARY
 " + for CLIPBOARD
 " copy/paste between vim buffer & system clipboard
-"vmap <unique> <silent> <F2> "+y
-vmap <unique> <silent> <F2> :w ! xsel -i -b
+"vmap <unique> <silent> ,y "+y
+vmap <unique> <silent> ,y :w ! xsel -i -b<CR>
 " copy contents of the unnamed register to system clipboard
 nmap <unique> <silent> <F2> :let @+=@<CR>
-"nmap <unique> <silent> <F3> "+p
-nmap <unique> <silent> <F3> :r!xsel -b -o
-nmap <unique> <silent> <F7> :setlocal spell! spelllang=en_us<CR>
-nmap <unique> <silent> ,d :!LANG=en_US.UTF8 zdict <C-R>=expand("<cword>")<CR><CR>
+"nmap <unique> <silent> ,p "+p
+nmap <unique> <silent> ,p :r!xsel -b -o<CR>
+"nmap <unique> <silent> <F7> :setlocal spell! spelllang=en_us<CR>
+nmap <unique> <silent> <F7> :setlocal spell!<CR>
 
 "nmap <unique> <F8> :set hls!<bar>set hls?<cr>
 nmap <unique> <F8> :let @/ = ""<CR>
-"nmap <unique> <F9> :TlistToggle<cr>
-nmap <unique> <silent> <F9> :!ydict <C-R>=expand("<cword>")<CR><CR>
-nmap <unique> <silent> <F10> :%s:\s\+$::<CR><C-O>
+nmap <unique> <F9> :TlistToggle<CR>
 nmap <unique> <F12>      :!ctags-exuberant -L cscope.files<CR>:!cscope -k -b -q<CR>:cs reset<CR>
+
+nmap <unique> <silent> ,c :%s:\s\+$::<CR><C-O>
+nmap <unique> <silent> ,d :!LANG=en_US.UTF8 zdict <C-R>=expand("<cword>")<CR><CR>
 nmap <unique> \\ :bn<CR>
 nmap <unique> g\ :bp<CR>
 "}}}
@@ -141,6 +157,7 @@ nmap <unique> g\ :bp<CR>
 if has("gui")
 	nmap <unique> <C-CR> <C-T>
 	nmap <unique> <C-SPACE> [D
+	let &guicursor = &guicursor . ",a:blinkon0"
 else
 	nmap <unique> \<CR> <C-T>
 	nmap <unique> \<SPACE> [D
@@ -162,11 +179,18 @@ set guioptions=m "m=menu l=left scroll bar r=right one b=bottom one
 "autocmd BufNewFile,BufRead *.S :cal SetSyn("asmMIPS")
 "let b:asmsyntax='armasm'
 let asmsyntax='armasm'
+" autocmd BufNewFile,BufRead *.f so /usr/share/vim/vim73/syntax/forth.vim
+" autocmd BufNewFile,BufRead *.e4 so /usr/share/vim/vim73/syntax/forth.vim
+" autocmd BufNewFile,BufRead *.fth so /usr/share/vim/vim73/syntax/forth.vim
 "autocmd BufNewFile,BufRead *.f :cal SetSyn("forth")
 autocmd BufNewFile,BufRead *.f set ft=forth
+autocmd BufNewFile,BufRead *.e4 set ft=forth
+autocmd BufNewFile,BufRead *.fth set ft=forth
 autocmd BufNewFile,BufRead *.[ch] set cindent
+autocmd BufNewFile,BufRead *.cpp set cindent
+autocmd BufNewFile,BufRead *.hpp set cindent
 
-"for quickfix (debug) 
+"for quickfix (debug)
 "Damn it! <C-I> == <TAB> mixed with jump & quickfix !! now swap <F6> & <TAB>
 "nmap <unique> <TAB> :cnext<CR>
 "nmap <unique> ,,     :cnext<CR>
@@ -279,7 +303,7 @@ nmap <unique> <TAB>q     :ccl<CR>
 "}}}
 " hi Comment    ctermfg=Cyan guifg=#80a0ff
 " hi Constant   term=underline ctermfg=Magenta guifg=#ffa0a0
-" hi Special    term=bold ctermfg=LightRed guifg=Orange     
+" hi Special    term=bold ctermfg=LightRed guifg=Orange
 " hi Identifier term=underline cterm=bold ctermfg=Cyan guifg=#40ffff
 " hi Statement  term=bold ctermfg=Yellow guifg=#ffff60 gui=bold
 " hi PreProc    term=underline ctermfg=LightBlue guifg=#ff80ff
@@ -289,7 +313,7 @@ set nobackup
 
 ":ar[gs]	Print the argument list, with the current file in square brackets.
 ":files[!]
-":buffers[!]	
+":buffers[!]
 ":ls[!]		Show all buffers.
 "
 " :bufdo[!] {cmd}	Execute {cmd} in each buffer in the buffer list.
@@ -321,14 +345,21 @@ set hls
 "/\(flash\)\@<=\.c		.c			找.c前有flash
 "/\(Clash\)\@<!\.c   		.c			找.c前沒Clash
 " I don't know how to use it.
-"\@>   
+"\@>
 filetype plugin indent on
 
 
 set fileencodings=ucs-bom,utf-8,default,cp950,latin1
 set formatoptions+=m
 
-:let $LANG = 'en' " disable translation
+set helplang=en
+set spelllang=en_us,cjk
+"let $LANG = 'en' " disable translation
+language en_US.utf8
+"language messages en_US.utf8
+"language ctype en_US.utf8
+"language time en_US.utf8
+
 " In many terminal emulators the mouse works just fine, thus enable it.
 "if has('mouse')
 "  set mouse=a
