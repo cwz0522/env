@@ -1,18 +1,23 @@
   password cROCQaUyuzEYI
 # Set default encoding using utf8
 defutf8 on
+startup_message off
+defscrollback 2048
 
 hardstatus alwayslastline "%-Lw%{= BW}%50>%n%f* %t%{-}%+Lw%<"
-# Enable 256-color mode when screen is started with TERM=xterm-256color
-# Taken from: http://frexx.de/xterm-256-notes/
-#
-# Note that TERM != "xterm-256color" within a screen window. Rather it is
-# "screen" or "screen-bce"
-# 
-# terminfo and termcap for nice 256 color terminal
-# allow bold colors - necessary for some reason
-attrcolor b ".I"
-# tell screen how to set colors. AB = background, AF=foreground
-termcapinfo xterm-256color 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+
+# ref to https://wiki.archlinux.org/index.php/GNU_Screen#Use_256_colors
+term screen-256color
+#term xterm-256color
+#term rxvt-unicode-256color
+attrcolor b ".I"    # allow bold colors - necessary for some reason
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'   # tell screen how to set colors. AB = background, AF=foreground
+defbce on    # use current bg color for erased chars
 
 
+# To use the scroll bar of e.g. xterm or konsole
+termcapinfo xterm* ti@:te@
+
+
+# c-a : encoding big5
+# c-a : encoding utf8
