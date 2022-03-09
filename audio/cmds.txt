@@ -1,0 +1,26 @@
+pactl -h
+
+# short version
+pactl list short modules
+pactl list short sinks
+pactl list short sources
+pactl list short sink-inputs
+pactl list short source-outputs
+pactl list short clients
+pactl list short samples
+pactl list short cards
+pactl list short message-handlers
+
+# verbose version
+pactl list short modules
+pactl list short sinks
+pactl list short sources
+pactl list short sink-inputs
+pactl list short source-outputs
+pactl list short clients
+pactl list short samples
+pactl list short cards
+pactl list short message-handlers
+
+pacmd -h
+
