@@ -1,5 +1,12 @@
 set nocompatible
-"set t_Co=256
+" :h let-&
+" set t_Co=256
+" :h term.txt, :echo &t_Co, :h t_Co, :h tmux-integration
+" :h os_win32.txt
+" check win32 env by 1. has('win32') or 2. exists('$WSLENV')
+if exists('$MSYSTEM')
+	let MSYS = 1
+endif
 let g:CSApprox_loaded = 1 " disable  CSApprox
 let g:NERDShutUp = 1
 " for c-support
@@ -10,43 +17,12 @@ let g:C_FormatYear            = 'year %Y'
 " Disable EnhancedCommentify
 let DidEnhancedCommentify = 1
 
-
-
-"source $VIMRUNTIME/vimrc_example.vim
-"source $VIMRUNTIME/mswin.vim
-"behave mswin
-
-"set diffexpr=MyDiff()
-"function MyDiff()
-"  let opt = '-a --binary '
-"  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-"  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-"  let arg1 = v:fname_in
-"  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-"  let arg2 = v:fname_new
-"  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-"  let arg3 = v:fname_out
-"  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-"  let eq = ''
-"  if $VIMRUNTIME =~ ' '
-"    if &sh =~ '\<cmd'
-"      let cmd = '""' . $VIMRUNTIME . '\diff"'
-"      let eq = '"'
-"    else
-"      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
-"    endif
-"  else
-"    let cmd = $VIMRUNTIME . '\diff'
-"  endif
-"  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
-"endfunction
-
 " *** basic settings *** {{{
 colorscheme torte
 "colorscheme desert
 set visualbell
 set laststatus=2
-set statusline=%<%f%=\ [%1*%M%*%n%R%H]\ %-19(%3l,%02c%03V%)\ %02BH
+set statusline=%<%f%=\ [%1*%M%*%n%R%H]\ %-19(%3l,%02c%03V%)\ %02BH\ %P
 hi User1 term=inverse,bold cterm=inverse,bold ctermfg=red
 set cmdheight=2
 set scs
@@ -65,7 +41,7 @@ noremap <TAB> <F6>
 noremap <F6> <TAB>
 nmap <silent> <unique> <F5> <C-O>
 
-set path+=./include/*
+" set path+=./include/*
 
 let spell_auto_type=""
     "vim支持打开的文件编码
@@ -76,9 +52,6 @@ let spell_auto_type=""
     set encoding=utf-8      "vim 内部编码
     set termencoding=utf-8
     set formatoptions+=m
-
-
-
 
 "    set guifont=Courier\ New\:h12
 "    set guifontwide=NSimsun\:h12
@@ -134,11 +107,15 @@ vmap <unique> <silent> g?     y/<C-R>=substitute(escape(@", '\\/.*$^~[]'),"\n","
 " + for CLIPBOARD
 " copy/paste between vim buffer & system clipboard
 "vmap <unique> <silent> ,y "+y
-vmap <unique> <silent> ,y :w ! xsel -i -b<CR>
+if ! MSYS
+ vmap <unique> <silent> ,y :w ! xsel -i -b<CR>
+endif
 " copy contents of the unnamed register to system clipboard
 nmap <unique> <silent> <F2> :let @+=@<CR>
 "nmap <unique> <silent> ,p "+p
-nmap <unique> <silent> ,p :r!xsel -b -o<CR>
+if ! MSYS
+ nmap <unique> <silent> ,p :r!xsel -b -o<CR>
+endif
 "nmap <unique> <silent> <F7> :setlocal spell! spelllang=en_us<CR>
 nmap <unique> <silent> <F7> :setlocal spell!<CR>
 
@@ -148,7 +125,14 @@ nmap <unique> <F9> :TlistToggle<CR>
 nmap <unique> <F12>      :!ctags-exuberant -L cscope.files<CR>:!cscope -k -b -q<CR>:cs reset<CR>
 
 nmap <unique> <silent> ,c :%s:\s\+$::<CR><C-O>
-nmap <unique> <silent> ,d :!LANG=en_US.UTF8 zdict <C-R>=expand("<cword>")<CR><CR>
+if ! MSYS
+ "nmap <unique> <silent> ,d :!LANG=en_US.UTF8 zdict <C-R>=expand("<cword>")<CR><CR>
+ "vmap <unique> <silent> ,d y:!LANG=en_US.UTF8 zdict <C-R>"<CR>
+ nmap <unique> <silent> ,d :!zdict <C-R>=expand("<cword>")<CR><CR>
+ vmap <unique> <silent> ,d y:!zdict <C-R>"<CR>
+ nmap <unique> <silent> ,D :let str = input("string to dict: ", expand("<cword>"))<bar>exe ":!zdict " . str<CR>
+endif
+nmap <unique> <silent> ,e :exec getline('.')<CR>
 nmap <unique> \\ :bn<CR>
 nmap <unique> g\ :bp<CR>
 "}}}
@@ -168,12 +152,6 @@ nmap <unique> <CR> <C-]>zt
 nmap <unique> <SPACE> [d
 set guioptions=m "m=menu l=left scroll bar r=right one b=bottom one
 
-"gdb IDE
-"nmap <unique> _g :Ide
-"cab ide Ide
-"nmap <unique> _p :Ide print <cword><CR>
-"nmap <unique> _b :exe 'Ide break ' .expand("%:t"). ':' .line(".")<CR>
-"nmap <unique> _u :exe 'Ide until ' .expand("%:t"). ':' .line(".")<CR>
 
 "mips asm
 "autocmd BufNewFile,BufRead *.S :cal SetSyn("asmMIPS")
@@ -212,45 +190,6 @@ nmap <unique> <TAB>q     :ccl<CR>
 "}}}
 
 
-" *** some experiments *** {{{
-"good
-"h :norm
-"highlight a block need improvement
-"nmap <F5> /{\@<=\_.\{-}}\@=<CR>
-"/{\@<=\_[a-zA-Z0-9_ |=(),.;\[\]&~+*-]\{-}}\@=
-"map <F5> vi{y:match ShowBlock /<C-R>=escape(@", '\\/.*$^~[]')<CR><CR>
-"map <F6> vi{<BAR>maomb<Esc><BAR>:match ShowBlock /\%<<C-R>=line("'a")+1<CR>l\%><C-R>=line("'b")-1<CR>l.<CR><BAR><C-O>
-"map <Silent> <F6> va{<BAR>maomb<ESC><BAR>:match Search /\%<<C-R>=line("'a")+1<CR>l\%><C-R>=line("'b")-1<CR>l[{}]<CR><BAR><C-O>
-"nmap <unique> <F6> va{<BAR>maomb<ESC><BAR>:match Search /\%<<C-R>=line("'a")+1<CR>l\%><C-R>=line("'b")-1<CR>l[{}]<CR><BAR><C-O>
-"                                                                       \\| let \| to appear in command line,\| only | appear
-"nmap <F6> va{<BAR>maomb<ESC><BAR>:match Search /\%<C-R>=line("'b")<CR>l{\\|\%<C-R>=line("'a")<CR>l}<CR><BAR><C-O>
-"nmap <F6> mdMmc`dva{<BAR>maomb<Esc><BAR>:match Search /\%<C-R>=line("'b")<CR>l{\\|\%<C-R>=line("'a")<CR>l}<CR><BAR>'czz`d
-"nmap <F6> mdMmc`dva{<Esc><Esc><BAR>:match Search /\%<C-R>=line("'<")<CR>l{\\|\%<C-R>=line("'>")<CR>l}<CR><BAR>'czz`d
-"nmap <F6> mdMmc`d[{ma]}mb[(ma])mb[[ma]]mb<BAR>:match Search /\%<C-R>=line("'a")<CR>l{\\|\%<C-R>=line("'b")<CR>l}<CR><BAR>'czz`d
-"nmap <F6> mdMmc`d[(ma])mb<BAR>:match Search /\%<C-R>=line("'a")<CR>l(\\|\%<C-R>=line("'b")<CR>l)<CR><BAR>'czz`d
-"nmap <F6> mdMmc`d[(ma])mb<BAR>:match Search /\%<C-R>=line("'a")<CR>l\%<C-R>=col("'a")<CR>c(\\|\%<C-R>=line("'b")<CR>l\%<C-R>=col("'b")<CR>c)<CR><BAR>'czz`d
-
-
-"ok
-"nmap <F6> mdMmc`d[(ma])mb<BAR>:match Search /\%<C-R>=line("'a")<CR>l\%<C-R>=col("'a")<CR>c(\\|\%<C-R>=line("'b")<CR>l\%<C-R>=col("'b")<CR>c)<CR><BAR>'czz`d
-"nmap <unique> \<F6> :match<CR>
-
-
-
-"exec "norm va{\|maomb\<ESC>\|:match Search /\\%\<C-R>=line\(\"'b\"\)\<CR>l{\<CR>"
-"exec "norm va{\|maomb\<ESC>\|:match Search /\\%\<C-R>=line\(\"'b\"\)\<CR>l{\\|\\%\<C-R>=line\(\"'a\"\)\<CR>l}\<CR>"
-
-"my function Oh!YA!
-"function s:ShowBlock()
-"	set updatetime=200
-"	exec "norm va{\|maomb\<ESC>\|:match Search /\\%\<C-R>=line\(\"'b\"\)\<CR>l{\\|\\%\<C-R>=line\(\"'a\"\)\<CR>l}\<CR>\<C-O>"
-"	return
-"endfunction
-"
-"au! CursorHold *.[ch] nested silent call s:ShowBlock()
-"set updatetime=200
-"echo  line("'a") == line("'b") && col("'a") == col("'b")
-"}}}
 
 "For Emacs-style editing on the command-line: >"{{{
 	" start of line
@@ -272,43 +211,6 @@ nmap <unique> <TAB>q     :ccl<CR>
 	" forward one word
 	:cnoremap <Esc><C-F>	<S-Right>"}}}
 
-" *** for reference but instead of "setlocale nobuflisted in MiniBufExplorer" *** {{{
-"for annoying side-effect for MiniBufExplorer ;buffer select
-"nmap <unique> \\ :call BufNext()<CR>
-"nmap <unique> g\ :call BufPrev()<CR>
-"function BufNext()
-"	bn
-"	if bufname("%") == "-MiniBufExplorer-"
-"		bn
-"	endif
-"	return
-"endfunction
-"
-"function BufPrev()
-"	bp
-"	if bufname("%") == "-MiniBufExplorer-"
-"		bp
-"	endif
-"	return
-"endfunction
-"
-"nmap <C-O> :call Ctrl_O()<CR>
-"function! Ctrl_O()
-"	exe "normal!  \<C-O>"
-"	if bufname("%") == "-MiniBufExplorer-"
-"	exe "normal!  \<C-O>"
-"	endif
-"	return
-"endfunction
-"}}}
-" hi Comment    ctermfg=Cyan guifg=#80a0ff
-" hi Constant   term=underline ctermfg=Magenta guifg=#ffa0a0
-" hi Special    term=bold ctermfg=LightRed guifg=Orange
-" hi Identifier term=underline cterm=bold ctermfg=Cyan guifg=#40ffff
-" hi Statement  term=bold ctermfg=Yellow guifg=#ffff60 gui=bold
-" hi PreProc    term=underline ctermfg=LightBlue guifg=#ff80ff
-" hi Type       term=underline ctermfg=LightGreen guifg=#60ff60 gui=bold
-" hi Ignore     ctermfg=black guifg=bg
 set nobackup
 
 ":ar[gs]	Print the argument list, with the current file in square brackets.
@@ -324,19 +226,11 @@ set nobackup
 syntax on
 set hls
 
-"\@=	Matches the preceding atom with zero width. {not in Vi}
-"	Like "(?=pattern)" in Perl.
-"\@!	Matches with zero width if the preceding atom does NOT match at the
-"	current position. |/zero-width| {not in Vi}
-"	Like '(?!pattern)" in Perl.
-"\@<=	Matches with zero width if the preceding atom matches just before what
-"	follows. |/zero-width| {not in Vi}
-"	Like '(?<=pattern)" in Perl, but Vim allows non-fixed-width patterns.
-"\@<!	Matches with zero width if the preceding atom does NOT match just
-"	before what follows.  Thus this matches if there is no position in the
-"	Like '(?<!pattern)" in Perl, but Vim allows non-fixed-width patterns.
-"\@>	Matches the preceding atom like matching a whole pattern. {not in Vi}
-"	Like '(?>pattern)" in Perl.
+":h \@=
+":h \@!
+":h \@<=
+":h \@<!
+":h \@>
 "
 "/* source\flash.c                                  1.0                   */
 " 搜尋上面那行                 符合，且高亮		想法
@@ -367,10 +261,53 @@ language en_US.utf8
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
-if &t_Co > 2 || has("gui_running")
+if &t_Co > 2 || has("gui_running") " :h feature-list
   syntax on
   set hlsearch
 endif
 
+nnoremap \csq :call ToggleCscopeQuickFix()<CR>
+function! ToggleCscopeQuickFix()
+  if &cscopequickfix == ''
+    set cscopequickfix=s-,c-,d-,i-,t-,e-
+    echo "cscope> use quickfix window"
+  else
+    set cscopequickfix=
+    echo "cscope> does not use quickfix window"
+  endif
+endfunction
 
 
+" Minimalist Vim Plugin Manager
+" Installation
+" curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+" curl -fLo ~/.vim/doc/plug.txt --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/doc/plug.txt
+" vim> :helptags .vim/doc
+" vim> :h vim-plug
+" vim> :helpclose
+call plug#begin('~/.vim/plugged')
+
+" Declare the list of plugins.
+Plug 'Rykka/riv.vim'
+Plug 'Rykka/InstantRst'
+Plug 'exvim/ex-cref'
+Plug 'weynhamz/vim-plugin-minibufexpl'
+Plug 'vim-scripts/taglist.vim'
+"Plug 'vim-scripts/linuxsty.vim'
+Plug 'vivien/vim-linux-coding-style'
+"https://github.com/WolfgangMehner/vim-plugins
+Plug 'WolfgangMehner/c-support'
+"Plug 'WolfgangMehner/awk-support'
+"Plug 'WolfgangMehner/bash-support'
+"Plug 'WolfgangMehner/latex-support'
+"Plug 'WolfgangMehner/perl-support'
+"Plug 'WolfgangMehner/vim-support'
+Plug 'vimwiki/vimwiki'
+
+" List ends here. Plugins become visible to Vim after this call.
+call plug#end()
+
+
+" :h diff-diffexpr
+" set diffexpr=MyDiff()
+" :helpclose

@@ -1,4 +1,0 @@
-http://mysite.verizon.net/astronaut/vim/index.html
-mkvimball.tar.gz
-Updated Apr 01, 2008 (v1)
-The "mkvimball" program creates vimballs: mkvimball vimballfile path1 path2 ... Also see vimball. 

@@ -1,7 +1,0 @@
-syntax/armasm.vim
-syntax/asmMIPS.vim
-syntax/forth.vim
-syntax/mips.vim
-
-./plugin/calendar.vim
-./plugin/minibufexpl.vim

@@ -1,5 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =3
-let g:netrw_dirhist_1='/home1/swtool/f2-fpga/FTK_phabricator/diagnostic.git'
-let g:netrw_dirhist_2='/home/swtool/Peter/Phabricator/linux-phabricator.git/include/asm-generic'
-let g:netrw_dirhist_3='/home/swtool/Peter/Phabricator/diagnostic/src'
