@@ -6,6 +6,8 @@ set nocompatible
 " check win32 env by 1. has('win32') or 2. exists('$WSLENV')
 if exists('$MSYSTEM')
 	let MSYS = 1
+else
+	let MSYS = 0
 endif
 let g:CSApprox_loaded = 1 " disable  CSApprox
 let g:NERDShutUp = 1
@@ -282,7 +284,7 @@ endfunction
 " Installation
 " curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 " curl -fLo ~/.vim/doc/plug.txt --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/doc/plug.txt
-" vim> :helptags .vim/doc
+" vim> :helptags ~/.vim/doc
 " vim> :h vim-plug
 " vim> :helpclose
 call plug#begin('~/.vim/plugged')
