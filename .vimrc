@@ -10,6 +10,14 @@ if exists('$MSYSTEM')
 else
 	let MSYS = 0
 endif
+"freedesktop.org was formerly known as the X Desktop Group, and the abbreviation "XDG" remains common in their work.
+if $XDG_SESSION_TYPE == "x11"
+	let XDG = 1
+elseif $XDG_SESSION_TYPE == "wayland"
+	let XDG = 2
+else
+	let XDG = 0
+endif
 set nobackup
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
@@ -19,7 +27,7 @@ if &t_Co > 2 || has("gui_running") " :h feature-list
 endif
 
 filetype plugin indent on
-set visualbell
+set visualbell t_vb=[?5h$<50>[?5l " t_vb= for no flash
 set laststatus=2
 hi User1 term=inverse,bold cterm=inverse,bold ctermfg=red
 "set statusline=%<%f%=\ [%1*%M%*%n%R%H]\ %-19(%3l,%02c%03V%)\ %02BH\ %P
@@ -28,6 +36,7 @@ set cmdheight=2
 set scs
 " no ignore case make more sense for C language!
 set noic
+set number
 set foldmethod=marker
 set lcs=tab:>-,trail:-,nbsp:%,eol:$
 runtime ftplugin/man.vim
@@ -106,6 +115,9 @@ if &diff
 else
 	colorscheme torte
 	"colorscheme desert
+
+	"let g:solarized_termcolors=256
+	"colorscheme solarized
 endif
 
 "}}}
@@ -149,26 +161,28 @@ nmap <F4> :let str = input("string to grep: ")<bar>exe ":cs find 6 " . str<CR>
 
 " *** useful key-mappings *** {{{
 "visual mode highlight search
-"my version don't escape special characters
-"map <unique> <F5> y<ESC><BAR>/<C-R>"<CR>n
-"vmap <unique> <silent> g/     y/<C-R>=escape(@", '\\/.*$^~[]')<CR><CR>
-"vmap <unique> <silent> g?     y?<C-R>=escape(@", '\\/.*$^~[]')<CR><CR>
-" Peter Chen extend the function to cross-lines search
 vmap <unique> <silent> g/     y/<C-R>=substitute(escape(@", '\\/.*$^~[]'),"\n","\\\\n","g")<CR><CR>
-vmap <unique> <silent> g?     y/<C-R>=substitute(escape(@", '\\/.*$^~[]'),"\n","\\\\n","g")<CR><CR>
+vmap <unique> <silent> g?     y?<C-R>=substitute(escape(@", '\\/.*$^~[]'),"\n","\\\\n","g")<CR><CR>
 
-" * for PRIMARY
-" + for CLIPBOARD
-" copy/paste between vim buffer & system clipboard
+" * for PRIMARY (mouse middle paste)
+" + for CLIPBOARD (Ctrl-v or Ctrl-Shift-v paste)
 "vmap <unique> <silent> ,y "+y
 if ! MSYS
- vmap <unique> <silent> ,y :w ! xsel -i -b<CR>
+	if XDG == 1
+		vmap <unique> <silent> ,y :w !xsel -i -b<CR>
+	elseif XDG == 2
+		vmap <unique> <silent> ,y :w !wl-copy<CR>
+	endif
 endif
 " copy contents of the unnamed register to system clipboard
 nmap <unique> <silent> <F2> :let @+=@<CR>
 "nmap <unique> <silent> ,p "+p
 if ! MSYS
- nmap <unique> <silent> ,p :r!xsel -b -o<CR>
+	if XDG == 1
+		nmap <unique> <silent> ,p :r !xsel -b -o<CR>
+	elseif XDG == 2
+		nmap <unique> <silent> ,p :r !wl-paste<CR>
+	endif
 endif
 "nmap <unique> <silent> <F7> :setlocal spell! spelllang=en_us<CR>
 nmap <unique> <silent> <F7> :setlocal spell! spell?<CR>
@@ -385,6 +399,7 @@ Plug 'vivien/vim-linux-coding-style'
 "
 Plug 'vimwiki/vimwiki'
 Plug 'ARM9/arm-syntax-vim'
+"Plug 'altercation/vim-colors-solarized'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
