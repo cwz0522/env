@@ -46,8 +46,6 @@ runtime ftplugin/man.vim
 let spell_auto_type=""
 "vim支持打开的文件编码
 "    set fileencodings=utf-8,ucs-bom,shift-jis,latin1,big5,gb18030,gbk,gb2312,cp936  "文件 UTF-8 编码
-set fileencodings=ucs-bom,utf-8,big5,latin1  "文件 UTF-8 编码
-" 解决显示界面乱码
 set fileencoding=utf-8
 set encoding=utf-8      "vim 内部编码
 set termencoding=utf-8
@@ -155,7 +153,7 @@ nmap <unique> \cs6 :cs find 6 <C-R>=expand("<cword>")<CR><CR>
 nmap <unique> \cs7 :cs find 7 <C-R>=expand("<cfile>")<CR><CR>
 "nmap <unique> \cs8 :cs find 8 <C-R>=expand("<cfile>")<CR><CR>
 nmap <unique> \cs8 :cs find 8 %:t<CR>
-nmap <F4> :let str = input("string to grep: ")<bar>exe ":cs find 6 " . str<CR>
+nmap <F4> :let str = input("string to grep: ")<Bar>exe ":cs find 6 " . str<CR>
 "nmap <F4> [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
 " }}}
 
@@ -187,12 +185,12 @@ endif
 "nmap <unique> <silent> <F7> :setlocal spell! spelllang=en_us<CR>
 nmap <unique> <silent> <F7> :setlocal spell! spell?<CR>
 
-"nmap <unique> <F8> :set hls!<bar>set hls?<cr>
+"nmap <unique> <F8> :set hls!<Bar>set hls?<cr>
 nmap <unique> <F8> :let @/ = ""<CR>
 nmap <unique> <F9> :TlistToggle<CR>
 nmap <unique> <F12>      :!ctags -L cscope.files<CR>:!cscope -k -b -q<CR>:cs reset<CR>
 
-nmap <unique> <silent> \<F12> :call ReNew_tags_index_for_ctags_cscope()<CR>
+nmap <unique> <silent> <Leader><F12> :call ReNew_tags_index_for_ctags_cscope()<CR>
 function! ReNew_tags_index_for_ctags_cscope()
 if filereadable("cscope.files")
         silent! !rm cscope.* tags
@@ -210,7 +208,7 @@ if ! MSYS
  "vmap <unique> <silent> ,d y:!LANG=en_US.UTF8 zdict <C-R>"<CR>
  nmap <unique> <silent> ,d :!zdict <C-R>=expand("<cword>")<CR><CR>
  vmap <unique> <silent> ,d y:!zdict <C-R>"<CR>
- nmap <unique> <silent> ,D :let str = input("string to dict: ", expand("<cword>"))<bar>exe ":!zdict " . str<CR>
+ nmap <unique> <silent> ,D :let str = input("string to dict: ", expand("<cword>"))<Bar>exe ":!zdict " . str<CR>
 endif
 nmap <unique> <silent> ,e :exec getline('.')<CR>
 nmap <unique> <silent> ,E :exec substitute(getline('.'),"^\\s*\"\\s*","","")<CR>
