@@ -401,8 +401,29 @@ Plug 'ARM9/arm-syntax-vim'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
-
 "}}}
+"
+" vimwiki"{{{
+" https://blog.csdn.net/lxyoucan/article/details/117950082
+let g:vimwiki_list = [{
+  \ 'auto_export': 1,
+  \ 'automatic_nested_syntaxes':1,
+  \ 'path_html': '$HOME/vimwiki/html',
+  \ 'path': '$HOME/vimwiki/wiki',
+  \ 'template_path': '$HOME/vimwiki/custom_wiki2html/template/',
+  \ 'syntax': 'markdown',
+  \ 'ext':'.md',
+  \ 'template_default':'markdown',
+  \ 'custom_wiki2html': '$HOME/vimwiki/custom_wiki2html/wiki2html.sh',
+  \ 'template_ext':'.html'
+\}]
+
+au BufRead,BufNewFile *.md set filetype=vimwiki
+
+let g:taskwiki_sort_orders={"C": "pri-"}
+let g:taskwiki_syntax = 'markdown'
+let g:taskwiki_markdown_syntax='markdown'
+let g:taskwiki_markup_syntax='markdown'"}}}
 
 " Workarounds"{{{
 hi User1 term=inverse,bold cterm=inverse,bold ctermfg=red
