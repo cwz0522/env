@@ -256,10 +256,12 @@ function! ToggleListMode()
 		echo "enable list mode"
 	endif
 endfunction
-nmap <Leader>l :call ToggleListMode()<CR>
+nmap <F5> :call ToggleListMode()<CR>
+"nmap <Leader>l :call ToggleListMode()<CR>
 "nmap gl :set list! list?<CR>
 
-nmap <Leader>p :set paste! paste?<CR>
+nmap <F6> :set paste! paste?<CR>
+"nmap <Leader>p :set paste! paste?<CR>
 "nmap g== :keepp %s:\s\+$::\|update<CR>
 "nmap g== :%s:\s\+$::<CR>
 
