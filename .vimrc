@@ -36,7 +36,6 @@ set cmdheight=2
 set scs
 " no ignore case make more sense for C language!
 set noic
-set number
 set foldmethod=marker
 set lcs=tab:>-,trail:-,nbsp:%,eol:$
 runtime ftplugin/man.vim
@@ -153,7 +152,8 @@ nmap <unique> \cs6 :cs find 6 <C-R>=expand("<cword>")<CR><CR>
 nmap <unique> \cs7 :cs find 7 <C-R>=expand("<cfile>")<CR><CR>
 "nmap <unique> \cs8 :cs find 8 <C-R>=expand("<cfile>")<CR><CR>
 nmap <unique> \cs8 :cs find 8 %:t<CR>
-nmap <F4> :let str = input("string to grep: ")<Bar>exe ":cs find 6 " . str<CR>
+nmap <F4> :let str = input("find symbol: ")<Bar>:exe ":cs find 0 " . str<CR>
+nmap <Leader><F4> :let str = input("string to grep: ")<Bar>:exe ":cs find 6 " . str<CR>
 "nmap <F4> [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
 " }}}
 
@@ -223,17 +223,16 @@ if has("gui")
 	let &guicursor = &guicursor . ",a:blinkon0"
 	set guioptions=m "m=menu l=left scroll bar r=right one b=bottom one
 	set guifont=文泉驛等寬微米黑\ 10
-	"for mswin
-	"set guifont=Courier\ New\:h12
-	"set guifontwide=NSimsun\:h12
-else
-	nmap <unique> \<CR> <C-T>
-	nmap <unique> \<SPACE> [D
 endif
 
-nmap <unique> <CR> <C-]>zt
-"map <SPACE> [D
-nmap <unique> <SPACE> [d
+function! Lazy_ctags_key_mappings()
+	nmap <buffer> \<CR> <C-T>
+	nmap <buffer> \<SPACE> [D
+
+	nmap <buffer> <CR> <C-]>zt
+	"map <buffer> <SPACE> [D
+	nmap <buffer> <SPACE> [d
+endfunction
 
 "noremap <TAB> <F6>
 "noremap <F6> <TAB>
@@ -241,22 +240,28 @@ nmap <unique> <SPACE> [d
 "nmap <silent> <unique> <F6> <C-I>
 function! ToggleListMode()
 	set list!
+	"set number!
 
 	if &list == ''
-		match none
+		"match none
 		echo "disable list mode"
+		set colorcolumn=
+
 	else
-		highlight MyRightMarginCheck ctermbg=grey guibg=grey
-		match MyRightMarginCheck /\%>80v/
+		"highlight MyRightMarginCheck ctermbg=grey guibg=grey
+		"match MyRightMarginCheck /\%>80v/
+		"exe "match MyRightMarginCheck /\\%>" . &tw . "v/"
+		hi ColorColumn ctermbg=red guibg=red
+		exe "set colorcolumn=" . &textwidth
 		echo "enable list mode"
 	endif
 endfunction
-nmap gl :call ToggleListMode()<CR>
+nmap <Leader>l :call ToggleListMode()<CR>
 "nmap gl :set list! list?<CR>
 
-nmap gp :set paste! paste?<CR>
+nmap <Leader>p :set paste! paste?<CR>
 "nmap g== :keepp %s:\s\+$::\|update<CR>
-nmap g== :%s:\s\+$::<CR>
+"nmap g== :%s:\s\+$::<CR>
 
 "Function insert C Header Guard
 function! s:insert_header_guard()
@@ -285,40 +290,44 @@ endfunction
 "autocmd BufNewFile,BufRead *.S cal SetSyn("asmMIPS")
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plug 'ARM9/arm-syntax-vim'
-"au BufNewFile,BufRead *.s,*.S set filetype=arm " arm = armv6/7
+"autocmd BufNewFile,BufRead *.s,*.S set filetype=arm " arm = armv6/7
 "let asmsyntax='arm'
 "
 " arm64asm
 " curl -fLo ~/.vim/syntax/arm64asm.vim --create-dirs https://raw.githubusercontent.com/compnerd/arm64asm-vim/master/syntax/arm64asm.vim
 let asmsyntax='arm64asm'
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" While testing autocommands, you might find the 'verbose' option to be useful: >
-"	:set verbose? verbose=9 verbose?
-" Revert verbose=0
-"	:set verbose? verbose=0 verbose?
-autocmd BufNewFile,BufRead *.f set ft=forth
-autocmd BufNewFile,BufRead *.e4 set ft=forth
-autocmd BufNewFile,BufRead *.fth set ft=forth
-autocmd BufNewFile,BufRead *.[ch] set cindent
-"autocmd BufNewFile,BufRead *.[ch] nmap <buffer> g== :keepmarks %!Lindent<CR>:update<CR>
-"autocmd BufNewFile,BufRead *.[ch] vmap <buffer> g== <CR>:!Lindent<CR>:update<CR>
-autocmd BufNewFile,BufRead *.[ch] nmap <buffer> g== :keepmarks %!Lindent<CR>
-autocmd BufNewFile,BufRead *.[ch] vmap <buffer> g== <CR>:!Lindent<CR>
-autocmd BufNewFile,BufRead *.{cpp,hpp} set cindent
-autocmd BufNewFile *.{h,hpp} call <SID>insert_header_guard()
-autocmd BufWinEnter quickfix nunmap <CR>
+if !exists("my_autocommands_loaded")
+	let my_autocommands_loaded = 1
 
-" vim -b : edit binary using xxd-format!
-augroup Binary
-  au!
-  au BufReadPre  *.bin let &bin=1
-  au BufReadPost *.bin if &bin | %!xxd
-  au BufReadPost *.bin set ft=xxd | endif
-  au BufWritePre *.bin if &bin | %!xxd -r
-  au BufWritePre *.bin endif
-  au BufWritePost *.bin if &bin | %!xxd
-  au BufWritePost *.bin set nomod | endif
-augroup END
+	" While testing autocommands, you might find the 'verbose' option to be useful: >
+	"	:set verbose? verbose=9 verbose?
+	" Revert verbose=0
+	"	:set verbose? verbose=0 verbose?
+	autocmd BufNewFile,BufRead *.{f,e4,fth} set ft=forth
+	"autocmd BufNewFile,BufRead *.[ch] nmap <buffer> g== :keepmarks %!Lindent<CR>:update<CR>
+	"autocmd BufNewFile,BufRead *.[ch] vmap <buffer> g== <CR>:!Lindent<CR>:update<CR>
+	autocmd BufNewFile,BufRead *.[ch] nmap <buffer> g== :keepmarks %!Lindent<CR>
+	autocmd BufNewFile,BufRead *.[ch] vmap <buffer> g== <CR>:!Lindent<CR>
+	autocmd BufNewFile,BufRead *.[ch],*.{cpp,hpp,cc} set cindent
+	autocmd BufNewFile *.{h,hpp} call <SID>insert_header_guard()
+	autocmd BufNewFile,BufRead *.[cSsh],*.{cpp,hpp,cc} call Lazy_ctags_key_mappings()
+	autocmd BufWinEnter quickfix nunmap <CR>
+
+	autocmd BufRead,BufNewFile *.md set filetype=vimwiki
+
+	" vim -b : edit binary using xxd-format!
+	augroup Binary
+		autocmd!
+		autocmd BufReadPre  *.bin let &bin=1
+		autocmd BufReadPost *.bin if &bin | %!xxd
+		autocmd BufReadPost *.bin set ft=xxd | endif
+		autocmd BufWritePre *.bin if &bin | %!xxd -r
+		autocmd BufWritePre *.bin endif
+		autocmd BufWritePost *.bin if &bin | %!xxd
+		autocmd BufWritePost *.bin set nomod | endif
+	augroup END
+endif
 
 "for quickfix (use for debug)
 "nmap <unique> <TAB> :cnext<CR>
@@ -418,7 +427,6 @@ let g:vimwiki_list = [{
   \ 'template_ext':'.html'
 \}]
 
-au BufRead,BufNewFile *.md set filetype=vimwiki
 
 let g:taskwiki_sort_orders={"C": "pri-"}
 let g:taskwiki_syntax = 'markdown'

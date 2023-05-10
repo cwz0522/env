@@ -1,4 +1,4 @@
-# This is heavily based in the code here: 
+# This is heavily based in the code here:
 # https://gist.github.com/enpassant/0496e3db19e32e110edca03647c36541
 # Special thank you to the user enpassant for starting it https://github.com/enpassant
 
@@ -39,6 +39,6 @@ sed -r 's/(\[.+\])\(([^)]+)\)/\1(\2.html)/g' <"$INPUT" | \
 	pandoc $MATH --template="$FULL_TEMPLATE" -f "$SYNTAX" -t html -c "$CSSFILENAME" -M root_path:"$ROOT_PATH" -M title:"$FILENAME" | \
 	sed -r 's/<li>(.*)\[ \]/<li class="todo done0">\1/g; s/<li>(.*)\[X\]/<li class="todo done4">\1/g' > /tmp/crap.html
 
-# With this you can have ![pic of sharks](file:../sharks.jpg) in your markdown file and it removes "file" 
-# and the unnecesary dot html that the previous command added to the image. 
+# With this you can have ![pic of sharks](file:../sharks.jpg) in your markdown file and it removes "file"
+# and the unnecesary dot html that the previous command added to the image.
 sed 's/file://g' < /tmp/crap.html | sed 's/jpg.html/jpg/g' > "$OUTPUT.html"
