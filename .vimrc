@@ -238,6 +238,8 @@ endfunction
 "noremap <F6> <TAB>
 "nmap <silent> <unique> <F5> <C-O>
 "nmap <silent> <unique> <F6> <C-I>
+nmap <silent> <F5> <C-O>
+nmap <silent> <F6> <C-I>
 function! ToggleListMode()
 	set list!
 	"set number!
@@ -256,11 +258,11 @@ function! ToggleListMode()
 		echo "enable list mode"
 	endif
 endfunction
-nmap <F5> :call ToggleListMode()<CR>
+nmap <F2> :call ToggleListMode()<CR>
 "nmap <Leader>l :call ToggleListMode()<CR>
 "nmap gl :set list! list?<CR>
 
-nmap <F6> :set paste! paste?<CR>
+nmap <F3> :set paste! paste?<CR>
 "nmap <Leader>p :set paste! paste?<CR>
 "nmap g== :keepp %s:\s\+$::\|update<CR>
 "nmap g== :%s:\s\+$::<CR>
